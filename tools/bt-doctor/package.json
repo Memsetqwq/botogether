@@ -1,0 +1,14 @@
+{
+  "name": "bt-doctor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Botogether 模型服务兼容体检工具：检查端点、凭据、模型可调用性与引擎兼容性",
+  "type": "module",
+  "bin": {
+    "bt-doctor": "bt-doctor.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "SEE LICENSE IN ../LICENSE"
+}
