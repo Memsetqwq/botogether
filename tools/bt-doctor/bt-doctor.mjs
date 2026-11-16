@@ -32,6 +32,7 @@ const opts = {
   concurrency: 4,
   json: false,
   timeoutMs: 45000,
+  opencodeVersion: "",
 };
 const need = (i) => {
   const v = argv[i + 1];
@@ -49,6 +50,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--key-file") opts.keyFile = need(i++);
   else if (a === "--models") opts.models = need(i++).split(",").map((s) => s.trim()).filter(Boolean);
   else if (a === "--engines") opts.engines = need(i++).split(",").map((s) => s.trim()).filter(Boolean);
+  else if (a === "--opencode-version") opts.opencodeVersion = need(i++);
   else if (a === "--skip-probe") opts.skipProbe = true;
   else if (a === "--concurrency") opts.concurrency = Number(need(i++)) || 4;
   else if (a === "--timeout") opts.timeoutMs = Number(need(i++)) || 45000;
@@ -98,6 +100,7 @@ function printHelp() {
   --protocol <p>          openai | anthropic | auto（默认 auto）
   --models <a,b,c>        指定要探测的模型（默认取服务返回的清单）
   --engines <a,b,c>       要评估的引擎：opencode,claude,codex
+  --opencode-version <v>  本机 OpenCode 版本（如 2.2.7），用于在提示中标注
   --skip-probe            只读模型清单，不逐个发请求
   --concurrency <n>       并发探测数（默认 4）
   --timeout <ms>          单次请求超时（默认 45000）
@@ -259,10 +262,10 @@ function engineVerdict(engine, profile, probes) {
     } else {
       add(true, "协议匹配", "填 protocol=openai，targetEngine=opencode");
       add(
-        false,
-        "引擎版本受阻",
-        "OpenCode 2.x 不支持 provider 注入（issue #2）。请安装并注册 opencode-ai 1.x 的真实 exe",
-        true
+        true,
+        "自定义模型服务受支持",
+        "OpenCode 1.x 与 2.x 均支持自定义模型服务；2.x 需要 Botogether preview.13 或更新版本" +
+          (opts.opencodeVersion ? `（检测到 OpenCode ${opts.opencodeVersion}）` : "")
       );
     }
   } else if (engine === "claude") {

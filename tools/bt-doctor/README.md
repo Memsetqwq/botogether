@@ -12,8 +12,8 @@ Botogether 目前的「模型服务」配置对用户是黑盒：填错了没有
 
 | 问题 | 本工具如何提前暴露 |
 |---|---|
-| [#1](https://github.com/DmiyDing/botogether/issues/1) Windows 上 npm 原生 exe 型 Agent 被判定为不可用 | 提示需要注册真实 exe 路径（本工具不涉及发现流程，但会指出该限制） |
-| [#2](https://github.com/DmiyDing/botogether/issues/2) OpenCode 2.x 不支持 provider 注入 | 在「引擎兼容性」中直接标为**阻断**，并给出 1.x 的处理建议 |
+| [#1](https://github.com/DmiyDing/botogether/issues/1) Windows 上 npm 原生 exe 型 Agent 被判定为不可用 | 已由 preview.13 修复；本工具在 Windows 上仍建议确认注册的是真实 exe 路径 |
+| [#2](https://github.com/DmiyDing/botogether/issues/2) OpenCode 2.x 不支持 provider 注入 | 已由 preview.13 修复；1.x 与 2.x 现均支持，工具据此给出结论 |
 | [#3](https://github.com/DmiyDing/botogether/issues/3) `/v1/models` 里的已下线模型被当作可用 | 逐个模型真实发一次请求，把「已下线」与「可调用」分开列出 |
 
 配套文档：[模型服务兼容矩阵](../../docs/providers-matrix.md)。
@@ -52,6 +52,7 @@ node tools/bt-doctor/bt-doctor.mjs --endpoint https://api.minimaxi.com/v1 --key 
 | `--protocol <p>` | `openai` / `anthropic` / `auto`（默认 auto） |
 | `--models <a,b,c>` | 指定要探测的模型；默认取服务返回的清单 |
 | `--engines <a,b,c>` | 要评估的引擎：`opencode`、`claude`、`codex` |
+| `--opencode-version <v>` | 本机 OpenCode 版本（如 `2.2.7`），用于在提示中标注 |
 | `--skip-probe` | 只读清单，不逐个调用（不消耗额度） |
 | `--concurrency <n>` | 并发探测数，默认 4 |
 | `--timeout <ms>` | 单次请求超时，默认 45000 |
@@ -89,8 +90,8 @@ bt-doctor · Botogether 模型服务兼容体检
   opencode
     ✓ 协议匹配
         → 填 protocol=openai，targetEngine=opencode
-    ✗ 引擎版本受阻
-        → OpenCode 2.x 不支持 provider 注入（issue #2）。请安装并注册 opencode-ai 1.x 的真实 exe
+    ✓ 自定义模型服务受支持
+        → OpenCode 1.x 与 2.x 均支持自定义模型服务；2.x 需要 Botogether preview.13 或更新版本（检测到 OpenCode 2.2.7）
   claude
     ✗ 协议不匹配
         → Claude Code 只接受 anthropic 协议
